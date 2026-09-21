@@ -9,10 +9,10 @@ export default function GlobalHeader() {
 
   const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'Production House', path: '/production-house' },
-    { name: 'AI doanh nghiệp', path: '/ai-doanh-nghiep' },
-    { name: 'AI cá nhân', path: '/ai-ca-nhan' },
-    { name: 'Tự học AI', path: '/tu-hoc-ai' }
+    { name: 'Production House', path: '/production-house/tao-nhan-vat' },
+    { name: 'AI doanh nghiệp', path: '#', disabled: true },
+    { name: 'AI cá nhân', path: '#', disabled: true },
+    { name: 'Tự học AI', path: '#', disabled: true }
   ];
 
   return (
@@ -54,14 +54,16 @@ export default function GlobalHeader() {
         {navItems.map((item) => {
           const isActive = pathname === item.path;
           return (
-            <Link key={item.name} href={item.path} style={{
+            <Link key={item.name} href={item.path} onClick={(e) => { if (item.disabled) e.preventDefault(); }} style={{
               padding: '8px 20px',
               borderRadius: '20px',
               backgroundColor: isActive ? '#333' : '#e8e5e0',
               fontSize: '14px',
               fontWeight: isActive ? 'bold' : 'normal',
-              color: isActive ? '#fff' : '#333',
+              color: isActive ? '#fff' : (item.disabled ? '#aaa' : '#333'),
               textDecoration: 'none',
+              cursor: item.disabled ? 'default' : 'pointer',
+              opacity: item.disabled ? 0.6 : 1,
               transition: 'all 0.2s ease-in-out'
             }}>
               {item.name}
@@ -120,16 +122,18 @@ export default function GlobalHeader() {
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             return (
-              <Link key={item.name} href={item.path} onClick={() => setIsMobileMenuOpen(false)} style={{
+              <Link key={item.name} href={item.path} onClick={(e) => { if (item.disabled) e.preventDefault(); else setIsMobileMenuOpen(false); }} style={{
                 width: '100%',
                 padding: '16px',
                 borderRadius: '12px',
                 backgroundColor: isActive ? '#333' : '#e8e5e0',
                 fontSize: '18px',
                 fontWeight: isActive ? 'bold' : 'normal',
-                color: isActive ? '#fff' : '#333',
+                color: isActive ? '#fff' : (item.disabled ? '#aaa' : '#333'),
                 textDecoration: 'none',
-                textAlign: 'center'
+                textAlign: 'center',
+                cursor: item.disabled ? 'default' : 'pointer',
+                opacity: item.disabled ? 0.6 : 1
               }}>
                 {item.name}
               </Link>
