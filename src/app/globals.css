@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Are+You+Serious&family=Estonia&family=Kings&family=Ole&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+@font-face {
+  font-family: 'Brown Sugar';
+  src: url('/fonts/BrownSugar/BrownSugar.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  /* Colors */
+  --color-cream: #f8f5f0; /* Chỉnh theo icon.png */
+  --color-dark-bg: #2d2d2f; /* Chỉnh theo icon.png */
+  --color-text-dark: #2d2d2f;
+  --color-text-light: #f8f5f0;
+  --color-accent: #D4AF37; /* Gold accent for hovering/details */
+
+  /* Typography */
+  --font-serif: 'Kings', serif; /* Thay Brown Sugar bằng Kings */
+  --font-sans: 'Montserrat', sans-serif; /* Fallback cho Shopee Display */
+  --font-script: 'Estonia', cursive; /* Thay Dancing Script bằng Estonia */
+
+  /* Layout */
+  --nav-height: 80px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-text-dark);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Utils */
+.split-screen-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.pane-left {
+  flex: 1;
+  background-color: var(--color-cream);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.pane-right {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-text-light);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .split-screen-container {
+    flex-direction: column;
+  }
+  
+  .pane-left, .pane-right {
+    min-height: 100vh; /* Both panes take full height on mobile */
+  }
+}
+
+/* Animations */
+@keyframes bobbing {
+  0% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-15px) rotate(-12deg); }
+  100% { transform: translateY(0) rotate(-10deg); }
+}
+
+.boat-animate {
+  animation: bobbing 5s ease-in-out infinite;
+}
+
+@keyframes cloud-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100px); }
+}
+
+.cloud {
+  position: absolute;
+  pointer-events: none;
+  animation: cloud-drift 25s linear infinite alternate;
+  opacity: 0.6;
+}
+
+/* Compass Interactive */
+@keyframes pulse-glow {
+  0% { 
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2)); 
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+  }
+  100% { 
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.7)); 
+  }
+}
+
+.compass-interactive {
+  cursor: pointer;
+  animation: pulse-glow 1.2s infinite alternate ease-in-out;
+  transition: all 0.3s ease;
+}
+
+.compass-interactive:hover {
+  animation-play-state: paused;
+  filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.9)) !important;
+  transform: rotate(5deg) !important;
+  opacity: 1 !important;
+}
