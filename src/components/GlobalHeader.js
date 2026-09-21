@@ -9,6 +9,7 @@ export default function GlobalHeader() {
 
   const navItems = [
     { name: 'Home', path: '/' },
+    { name: 'Production House', path: '/production-house' },
     { name: 'AI doanh nghiệp', path: '/ai-doanh-nghiep' },
     { name: 'AI cá nhân', path: '/ai-ca-nhan' },
     { name: 'Tự học AI', path: '/tu-hoc-ai' }
@@ -83,6 +84,7 @@ export default function GlobalHeader() {
 
       {/* GLOBAL TRANSLATE ICON */}
       <div className="gh-lang-icon" style={{
+        display: 'none', /* Tạm ẩn theo yêu cầu */
         position: 'fixed',
         top: '84px',
         left: '50%',
@@ -134,7 +136,7 @@ export default function GlobalHeader() {
             );
           })}
           
-          <div style={{ marginTop: 'auto', marginBottom: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'none', marginTop: 'auto', marginBottom: '40px', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
              <span style={{ fontSize: '14px', color: '#666', letterSpacing: '1px', textTransform: 'uppercase' }}>Ngôn ngữ</span>
              <img loading="lazy" src="/images/language.svg" alt="Language" style={{ width: '60px', height: 'auto' }} />
           </div>

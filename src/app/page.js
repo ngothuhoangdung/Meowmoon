@@ -9,6 +9,7 @@ export default function Home() {
   const [isCompassVisible, setIsCompassVisible] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isBgLoaded, setIsBgLoaded] = useState(false);
+  const [isScrollModalOpen, setIsScrollModalOpen] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -62,6 +63,16 @@ export default function Home() {
   }, []);
 
   const localStyles = `
+    .highlight-hashtag { display: inline-block; background-color: #3c3228; color: #e6e3db !important; padding: 6px 14px; border-radius: 6px; font-weight: bold; animation: pulse-hashtag 2s infinite; transition: all 0.3s ease; letter-spacing: 2px; }
+    .highlight-hashtag:hover { background-color: #111; transform: scale(1.05); }
+    @keyframes pulse-hashtag { 0% { box-shadow: 0 0 0 0 rgba(60, 50, 40, 0.6); } 70% { box-shadow: 0 0 0 12px rgba(60, 50, 40, 0); } 100% { box-shadow: 0 0 0 0 rgba(60, 50, 40, 0); } }
+    .boat-container { transform: translateY(calc(var(--scroll-y, 0px) * -0.8)); transition: transform 0.1s ease-out; }
+    .scroll-interactive-container { transform: translateY(calc(var(--scroll-y, 0px) * -0.8)); transition: transform 0.1s ease-out; }
+    .h1-title { transform: translateY(calc(var(--scroll-y, 0px) * -0.15)); transition: transform 0.1s ease-out; }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
@@ -219,10 +230,37 @@ export default function Home() {
     .floating-paper-2 {
       filter: drop-shadow(-10px 25px 35px rgba(0,0,0,0.4));
     }
+    @media (max-width: 768px) {
+      .section-1 { min-height: 100vh !important; }
+      .section-1-content { flex-direction: column !important; padding: 84px 10px 20px !important; min-height: 100vh !important; display: block !important; }
+      .section-1-content .pane-left { padding: 0 !important; width: 100%; height: calc(100vh - 104px) !important; display: flex !important; flex-direction: column; justify-content: space-between; align-items: center; }
+      .h1-title { font-size: clamp(60px, 18vw, 120px) !important; text-align: center !important; left: 0 !important; margin: 0 !important; top: 0 !important; transform: translateY(calc(var(--scroll-y, 0px) * -0.05)) !important; }
+      .scroll-interactive-container { max-width: 60% !important; margin: 0 auto 110px auto !important; top: -20px !important; transform: translateY(calc(var(--scroll-y, 0px) * -0.15)) !important; }
+      .cloud-bg-right { width: 250% !important; right: -75% !important; bottom: -60% !important; opacity: 0.8 !important; }
+      .cloud-cover-left { width: 250% !important; left: -75% !important; opacity: 0.9 !important; }
+      .cloud-cover-right { width: 250% !important; right: -75% !important; opacity: 0.9 !important; top: 60% !important; }
+      .scroll-text-overlay { display: none !important; }
+      .transition-cloud-wrapper { bottom: 150px !important; }
+      .section-1-content .pane-right { position: absolute !important; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; padding: 0 !important; min-height: auto !important; display: block !important; }
+      .boat-container { position: absolute !important; top: 50% !important; right: 10% !important; transform: translateY(calc(-50% + var(--scroll-y, 0px) * -0.15)) !important; width: 130px !important; z-index: 2; }
+      .cloud-bg-left { display: block !important; position: absolute !important; top: 5% !important; left: -10% !important; width: 600px !important; opacity: 0.4 !important; z-index: 2 !important; }
+      
+      .section-2 { padding: 60px 20px !important; }
+      .shop-hashtag { font-size: 18px !important; align-self: center !important; margin: 0 0 20px 0 !important; text-align: center; }
+      .shop-h2 { font-size: 24px !important; }
+      .shop-footer-tags { flex-direction: column; align-items: center !important; gap: 20px; text-align: center; }
+      .shop-footer-tags > div { margin-right: 0 !important; font-size: 18px !important; }
+
+      .section-3-content { flex-direction: column !important; }
+      .compass-pane { padding: 20px !important; justify-content: center !important; }
+      .compass-wrapper { align-self: center !important; margin-right: 0 !important; left: 0 !important; top: 0 !important; transform: translateY(-20px) !important; }
+      .compass-interactive { width: 180px !important; }
+      .forest-video { object-position: 85% center !important; }
+    }
   `;
 
   return (
-    <div className="page-container" style={{ position: 'relative', width: '100vw', minHeight: '100vh', boxSizing: 'border-box', overflowX: 'clip' }}>
+    <div className="page-container" style={{ position: 'relative', zIndex: 1, '--scroll-y': `${scrollY}px`, width: '100vw', minHeight: '100vh', boxSizing: 'border-box', overflowX: 'clip' }}>
       <style dangerouslySetInnerHTML={{ __html: localStyles }} />
       
       {/* Loading Overlay */}
@@ -238,30 +276,30 @@ export default function Home() {
         justifyContent: 'center',
         alignItems: 'center',
         pointerEvents: isBgLoaded ? 'none' : 'all',
-        transition: 'background-color 0.8s ease-out, visibility 3s',
+        transition: 'background-color 2.5s ease-in-out, visibility 6s',
         visibility: isBgLoaded ? 'hidden' : 'visible',
         overflow: 'hidden'
       }}>
         {/* Lớp mây trôi tán loạn khi load xong */}
         <img loading="lazy" src="/images/cloud 3.png" alt="Cloud" style={{
             position: 'absolute', top: '-20%', left: '-20%', width: '100%', minWidth: '800px',
-            transform: isBgLoaded ? 'translate(-20%, -20%) scale(1.3)' : 'translate(0, 0) scale(1)',
+            transform: isBgLoaded ? 'translate(-10%, -10%) scale(1.15)' : 'translate(0, 0) scale(1)',
             opacity: isBgLoaded ? 0 : 0.8,
-            transition: 'all 2.5s cubic-bezier(0.25, 0.8, 0.25, 1)',
+            transition: 'all 4.5s ease-in-out',
             pointerEvents: 'none'
         }} />
         <img loading="lazy" src="/images/cloud 2.png" alt="Cloud" style={{
             position: 'absolute', top: '30%', left: '-10%', width: '120%', minWidth: '1000px',
-            transform: isBgLoaded ? 'translateX(-25%) scale(1.3)' : 'translateX(0) scale(1)',
+            transform: isBgLoaded ? 'translateX(-15%) scale(1.15)' : 'translateX(0) scale(1)',
             opacity: isBgLoaded ? 0 : 0.6,
-            transition: 'all 2.5s cubic-bezier(0.25, 0.8, 0.25, 1)',
+            transition: 'all 4.5s ease-in-out',
             pointerEvents: 'none'
         }} />
         <img loading="lazy" src="/images/cloud.png" alt="Cloud" style={{
             position: 'absolute', bottom: '-20%', right: '-20%', width: '120%', minWidth: '1000px',
-            transform: isBgLoaded ? 'translate(20%, 20%) scale(1.3)' : 'translate(0, 0) scale(1)',
+            transform: isBgLoaded ? 'translate(10%, 10%) scale(1.15)' : 'translate(0, 0) scale(1)',
             opacity: isBgLoaded ? 0 : 0.9,
-            transition: 'all 2.5s cubic-bezier(0.25, 0.8, 0.25, 1)',
+            transition: 'all 4.5s ease-in-out',
             pointerEvents: 'none'
         }} />
 
@@ -273,6 +311,52 @@ export default function Home() {
           Loading|
         </div>
       </div>
+
+      {/* Modal Đọc Thư Cổ */}
+      {isScrollModalOpen && (
+        <div 
+          onClick={() => setIsScrollModalOpen(false)}
+          style={{
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
+            backgroundColor: 'transparent', backdropFilter: 'none',
+            zIndex: 999999, display: 'flex', justifyContent: 'center', alignItems: 'center',
+            cursor: 'pointer', padding: '20px'
+          }}
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()} 
+            style={{
+              backgroundColor: '#e6e3db',
+              border: '4px solid #3c3228',
+              borderRadius: '4px',
+              padding: '40px 30px',
+              maxWidth: '500px',
+              width: '100%',
+              boxShadow: '0 15px 40px rgba(0,0,0,0.4), inset 0 0 30px rgba(100,80,60,0.2)',
+              position: 'relative',
+              cursor: 'default',
+            }}
+          >
+            <button 
+              onClick={() => setIsScrollModalOpen(false)}
+              style={{
+                position: 'absolute', top: '5px', right: '15px',
+                background: 'transparent', border: 'none',
+                fontSize: '32px', color: '#3c3228', cursor: 'pointer',
+                fontWeight: 'normal', fontFamily: 'sans-serif'
+              }}
+            >
+              ×
+            </button>
+            <div style={{ fontFamily: 'var(--font-script)', fontSize: 'clamp(22px, 6vw, 28px)', color: '#3c3228', lineHeight: '1.6', textAlign: 'center' }}>
+              "Hãy học và ứng dụng AI đến mức thấy được giới hạn của AI. Giới hạn đó chính là nơi bạn bắt đầu hành trình của chính mình."
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '30px', fontSize: '12px', color: '#666', fontFamily: 'var(--font-sans)', letterSpacing: '3px', fontWeight: 'bold' }}>
+              - LỜI NHẮN TỪ NHÀ PHÁT TRIỂN -
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* SVG Filter cho nền biển (Phiên bản được tối ưu cực nhẹ) */}
       <svg width="0" height="0" style={{ position: 'absolute', zIndex: -1 }}>
@@ -291,7 +375,7 @@ export default function Home() {
       </div>
 
       {/* ROW 1: BIỂN & MÂY (Z-index cao nhất để mây có thể tràn xuống các section dưới) */}
-      <section style={{ position: 'relative', width: '100%', minHeight: '130vh', zIndex: 5 }}>
+      <section className="section-1" style={{ position: 'relative', width: '100%', minHeight: '130vh', zIndex: 5 }}>
         
         {/* Background (Biển) */}
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
@@ -307,19 +391,19 @@ export default function Home() {
         </div>
 
         {/* Foreground (Nội dung) */}
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', width: '100%', minHeight: '130vh', paddingTop: '84px' }}>
+        <div className="section-1-content" style={{ position: 'relative', zIndex: 1, display: 'flex', width: '100%', minHeight: '130vh', paddingTop: '84px' }}>
           {/* Trái */}
           <div className="pane-left" style={{ flex: 1, position: 'relative', backgroundColor: 'transparent', padding: '50px', paddingTop: '66px' }}>
-            <h1 style={{ position: 'relative', top: '30px', left: '15px', fontSize: 'clamp(60px, 8vw, 120px)', lineHeight: '0.85', marginBottom: '40px', letterSpacing: '8px', color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 5px 15px rgba(0,0,0,0.3)', mixBlendMode: 'overlay', transform: `translateY(-${scrollY * 0.15}px)`, transition: 'transform 0.1s ease-out' }}>
+            <h1 className="h1-title" style={{ position: 'relative', top: '30px', left: '15px', fontSize: 'clamp(60px, 8vw, 120px)', lineHeight: '0.85', marginBottom: '40px', letterSpacing: '8px', color: 'rgba(255, 255, 255, 0.2)', textShadow: '0 5px 15px rgba(0,0,0,0.3)', mixBlendMode: 'overlay' }}>
               MEOW <br /> MOON
             </h1>
-            <div className="scroll-interactive-container" style={{ top: '-10px', transform: `translateY(-${scrollY * 0.8}px)`, transition: 'transform 0.1s ease-out' }}>
+            <div className="scroll-interactive-container" onClick={() => setIsScrollModalOpen(true)} style={{ top: '-10px' }}>
               {/* Mây lót dưới đáy cuộn giấy */}
               <img loading="lazy" src="/images/cloud 3.png" alt="Mây lót phải" className="cloud-bg-right" style={{ position: 'absolute', bottom: '-30%', right: '-50%', width: '110%', zIndex: -1, opacity: 0.6, pointerEvents: 'none' }} />
 
               <div className="floating-paper-1" style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img loading="lazy" src="/images/Thư cổ.png" alt="Thư cổ" style={{ width: '100%', height: 'auto', zIndex: 0, opacity: 0.95, display: 'block' }} />
-                <div style={{ fontFamily: 'var(--font-script)', fontSize: 'clamp(16px, 2.5vw, 28px)', color: '#444', zIndex: 1, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, calc(-50% - 10px)) rotate(-1deg)', width: '65%', textAlign: 'center', lineHeight: '1.25' }}>
+                <div className="scroll-text-overlay" style={{ fontFamily: 'var(--font-script)', fontSize: 'clamp(16px, 2.5vw, 28px)', color: '#444', zIndex: 1, position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, calc(-50% - 10px)) rotate(-1deg)', width: '65%', textAlign: 'center', lineHeight: '1.25' }}>
                   "Hãy học và ứng dụng AI đến mức thấy được giới hạn của AI. Giới hạn đó chính là nơi bạn bắt đầu hành trình của chính mình."
                 </div>
                 {/* Hai cụm mây che chở cuộn giấy */}
@@ -327,7 +411,7 @@ export default function Home() {
                   <img loading="lazy" src="/images/cloud 3.png" alt="Mây che trái" className="cloud-cover-left" />
                 </div>
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', animation: 'cloudWrapperDrift2 11s ease-in-out infinite', pointerEvents: 'none', zIndex: 2 }}>
-                  <img loading="lazy" src="/images/cloud 3.png" alt="Mây che phải" className="cloud-cover-right" />
+                  <img loading="lazy" src="/images/cloud 2.png" alt="Mây che phải" className="cloud-cover-right" />
                 </div>
               </div>
             </div>
@@ -335,9 +419,9 @@ export default function Home() {
           {/* Phải */}
           <div className="pane-right" style={{ flex: 1, position: 'relative', backgroundColor: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* Mây trôi góc trên phải Section 1 */}
-            <img loading="lazy" src="/images/cloud.png" alt="Mây trên phải" className="cloud-bg-left" style={{ position: 'absolute', top: '10%', right: '-15%', width: '70%', zIndex: 1, opacity: 0.5, pointerEvents: 'none', transform: 'scaleX(-1)' }} />
+            <img loading="lazy" src="/images/cloud 3.png" alt="Mây trên phải" className="cloud-bg-left" style={{ position: 'absolute', top: '10%', right: '-15%', width: '70%', zIndex: 1, opacity: 0.5, pointerEvents: 'none', transform: 'scaleX(-1)' }} />
             
-            <div style={{ width: '30%', zIndex: 2, transform: `translateY(-${scrollY * 0.8}px)`, transition: 'transform 0.1s ease-out' }}>
+            <div className="boat-container" style={{ width: '30%', zIndex: 2 }}>
               <img loading="lazy" src="/images/boar.svg" alt="Thuyền" className="drifting-boat" style={{ width: '100%', opacity: 0.9, display: 'block' }} />
             </div>
           </div>
@@ -351,19 +435,19 @@ export default function Home() {
       </section>
 
       {/* ROW 2: SECTION TRẮNG (Cửa tiệm) */}
-      <section style={{ position: 'relative', width: '100%', minHeight: '100vh', backgroundColor: '#fff', padding: '100px 50px', zIndex: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <section className="section-2" style={{ position: 'relative', width: '100%', minHeight: '100vh', backgroundColor: '#fff', padding: '100px 50px', zIndex: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ width: '100%', maxWidth: '700px', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 5 }}>
           
-          <div style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', marginBottom: '20px' }}>
+          <div className="shop-hashtag" style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', marginBottom: '20px' }}>
             #AI_HÌNH_ẢNH <br /> _SẢN PHẨM
           </div>
 
-          <div style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', alignSelf: 'flex-end', marginRight: '20%', marginBottom: '30px' }}>
+          <div className="shop-hashtag" style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', alignSelf: 'flex-end', marginRight: '20%', marginBottom: '30px' }}>
             #AI_SEO_AEO_GEO
           </div>
 
           <div style={{ position: 'relative', marginBottom: '40px', alignSelf: 'center' }}>
-            <h2 style={{ fontSize: '36px', fontWeight: 'bold', fontFamily: 'var(--font-sans)', color: 'var(--color-text-dark)', lineHeight: '1.3', textAlign: 'center' }}>
+            <h2 className="shop-h2" style={{ fontSize: '36px', fontWeight: 'bold', fontFamily: 'var(--font-sans)', color: 'var(--color-text-dark)', lineHeight: '1.3', textAlign: 'center' }}>
               CHÀO MỪNG BẠN ĐẾN VỚI <br />
               <span style={{
                 display: 'inline-block',
@@ -395,21 +479,21 @@ export default function Home() {
             </h2>
           </div>
 
-          <div style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', marginBottom: '30px', marginLeft: '5%' }}>
-            <Link href="/ai-doanh-nghiep/tao-nhan-vat" style={{ textDecoration: 'none', color: 'inherit', display: 'inline-block', transition: 'transform 0.2s', cursor: 'pointer' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
-              #Model_AI
-            </Link>
+          <div className="shop-hashtag" style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', marginBottom: '30px', marginLeft: '5%' }}>
+            <div className="highlight-hashtag" style={{ cursor: 'pointer' }} onClick={() => window.location.href = '/production-house/tao-nhan-vat'}>
+              #MODEL_AI
+            </div>
           </div>
 
-          <div style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', marginBottom: '30px' }}>
+          <div className="shop-hashtag" style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', marginBottom: '30px' }}>
             #AI_PHÁT_TRIỂN_BẢN_THÂN
           </div>
 
-          <div style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', alignSelf: 'flex-end', marginRight: '10%', marginBottom: '30px' }}>
+          <div className="shop-hashtag" style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333', alignSelf: 'flex-end', marginRight: '10%', marginBottom: '30px' }}>
             #AI_THỜI_TRANG
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div className="shop-footer-tags" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ fontFamily: 'var(--font-script)', fontSize: '26px', color: '#333' }}>
               #AI_ĂN_VÀ_ĂN
             </div>
@@ -422,7 +506,7 @@ export default function Home() {
         </div>
 
         {/* Mây chuyển tiếp xuống Tầng 3 (Rừng) - Sẽ tan đi khi video phát */}
-        <div style={{ 
+        <div className="transition-cloud-wrapper" style={{ 
           position: 'absolute', bottom: 0, left: 0, width: '100%', zIndex: 10, 
           opacity: isVideoPlaying ? 0 : 1, 
           transition: 'opacity 2.5s ease-in-out', 
@@ -443,6 +527,7 @@ export default function Home() {
         
         <video 
           ref={videoRef}
+          className="forest-video"
           src="/images/Top-down_camera_drop_forest_scene_20260918222613.mp4"
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}
           muted
@@ -454,12 +539,12 @@ export default function Home() {
         ></video>
 
         {/* Foreground (Split) */}
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', width: '100%', height: '100vh' }}>
+        <div className="section-3-content" style={{ position: 'relative', zIndex: 1, display: 'flex', width: '100%', height: '100vh' }}>
           {/* Trái (Trống) */}
           <div className="pane-left" style={{ flex: 1, backgroundColor: 'transparent' }}></div>
           {/* Phải (La bàn) - Chỉ bật lớp tương tác khi video kết thúc (để đè lên la bàn trong video) */}
-          <div className="pane-right" style={{ flex: 1, backgroundColor: 'transparent', padding: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ 
+          <div className="pane-right compass-pane" style={{ flex: 1, backgroundColor: 'transparent', padding: '50px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="compass-wrapper" style={{ 
               position: 'relative', zIndex: 2, marginBottom: '20px', alignSelf: 'flex-end', marginRight: '15%',
               left: '19px', // Dịch sang phải 19px
               top: '-5px', // Nâng lên cao 5px
