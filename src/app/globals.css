@@ -131,3 +131,10 @@ a {
   transform: rotate(5deg) !important;
   opacity: 1 !important;
 }
+
+/* Global print utilities */
+@media print {
+  .noPrint {
+    display: none !important;
+  }
+}
