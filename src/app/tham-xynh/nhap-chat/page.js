@@ -51,26 +51,34 @@ export default function NhapChatPage() {
         order_date: new Date().toISOString().split('T')[0],
       };
 
+      console.log('[NhapChat] Saving order:', body);
+
       const res = await fetch('/api/tham-xynh/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
+      const data = await res.json().catch(() => ({}));
+      console.log('[NhapChat] Response:', res.status, data);
+
       if (res.ok) {
-        alert('✅ Đã tạo đơn hàng thành công!');
+        alert('✅ Đã tạo đơn hàng thành công! Đơn #' + (data.order_number || data.id));
         setChatText('');
         setParsed(null);
         setEditData(null);
         router.push('/tham-xynh/don-ban');
+      } else {
+        alert('❌ Lỗi tạo đơn: ' + (data.error || `HTTP ${res.status}`));
       }
     } catch (err) {
-      console.error(err);
-      alert('❌ Lỗi khi tạo đơn hàng');
+      console.error('[NhapChat] Error:', err);
+      alert('❌ Lỗi kết nối: ' + err.message);
     } finally {
       setSaving(false);
     }
   };
+
 
   return (
     <div>
