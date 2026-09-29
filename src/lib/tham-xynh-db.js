@@ -8,12 +8,26 @@ export function getDb() {
   const url = process.env.TURSO_DATABASE_URL;
   const authToken = process.env.TURSO_AUTH_TOKEN;
 
-  if (url) {
-    // Production: Turso cloud
+  console.log('[ThamXynh DB] TURSO_DATABASE_URL:', url ? `${url.substring(0, 30)}...` : 'NOT SET');
+  console.log('[ThamXynh DB] TURSO_AUTH_TOKEN:', authToken ? 'SET' : 'NOT SET');
+  console.log('[ThamXynh DB] NODE_ENV:', process.env.NODE_ENV);
+  console.log('[ThamXynh DB] VERCEL:', process.env.VERCEL);
+
+  if (url && url.startsWith('libsql://')) {
+    // Turso cloud
     db = createClient({ url, authToken });
+    console.log('[ThamXynh DB] Using Turso cloud');
+  } else if (process.env.VERCEL) {
+    // On Vercel but no Turso URL — error
+    throw new Error(
+      'TURSO_DATABASE_URL is not configured. ' +
+      'Go to Vercel → Settings → Environment Variables and add: ' +
+      'TURSO_DATABASE_URL and TURSO_AUTH_TOKEN'
+    );
   } else {
-    // Local dev: use local file (libsql also supports local files)
+    // Local dev: use local file
     db = createClient({ url: 'file:data/tham-xynh.db' });
+    console.log('[ThamXynh DB] Using local file');
   }
 
   return db;
